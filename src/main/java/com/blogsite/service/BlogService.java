@@ -1,5 +1,6 @@
 package com.blogsite.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,5 +27,7 @@ public interface BlogService {
 
     // Delete a blog
     public void deleteBlog(Long id);
+
+	public List<Blog> getBlogsByCreationDuration(LocalDateTime durationFrom, LocalDateTime durationTo);
 
 }

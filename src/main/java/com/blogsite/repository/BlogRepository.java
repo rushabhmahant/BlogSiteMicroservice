@@ -1,5 +1,6 @@
 package com.blogsite.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,8 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     // Optional: find by category
     List<Blog> findByBlogCategory(String blogCategory);
+    
+    // Optional: find by creation timestammp
+    List<Blog> findByBlogCreationTimeBetween(LocalDateTime from, LocalDateTime to);
 
 }

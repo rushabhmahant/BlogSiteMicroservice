@@ -1,5 +1,6 @@
 package com.blogsite.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,13 @@ public class BlogSiteController {
     @GetMapping("/blogs/get/{category}")
     public ResponseEntity<List<Blog>> getBlogById(@PathVariable String category) {
     		List<Blog> foundBlogs = blogService.getBlogsByBlogCategory(category);
+    		return !foundBlogs.isEmpty() ? ResponseEntity.ok(foundBlogs) : ResponseEntity.notFound().build();
+    }
+    
+    // Get all blogs created in a duration
+    @GetMapping("/blogs/get/{durationFrom}/{durationTo}")
+    public ResponseEntity<List<Blog>> getBlogsInDuration(@PathVariable String durationFrom, @PathVariable String durationTo) {
+    		List<Blog> foundBlogs = blogService.getBlogsByCreationDuration(LocalDateTime.parse(durationFrom), LocalDateTime.parse(durationTo));
     		return !foundBlogs.isEmpty() ? ResponseEntity.ok(foundBlogs) : ResponseEntity.notFound().build();
     }
 

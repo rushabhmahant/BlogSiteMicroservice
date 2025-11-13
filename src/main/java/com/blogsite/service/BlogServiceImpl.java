@@ -70,6 +70,13 @@ public class BlogServiceImpl implements BlogService {
 		return foundBlogs;
 	}
 
+	@Override
+	public List<Blog> getBlogsByCreationDuration(LocalDateTime durationFrom, LocalDateTime durationTo) {
+		List<Blog> foundBlogs = blogRepository.findByBlogCreationTimeBetween(durationFrom, durationTo);
+		foundBlogs.stream().forEach(b -> b.setUser(null));
+		return foundBlogs;
+	}
+
     // Update a blog
     public Blog updateBlog(Long id, Blog updatedBlog) {
         return blogRepository.findById(id)
