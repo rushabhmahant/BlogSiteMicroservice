@@ -1,0 +1,27 @@
+package com.blogsite.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.blogsite.model.Blog;
+
+public interface BlogService {
+	
+	public Blog createBlog(Long userId, Blog blog);
+
+    // Get all blogs
+    public List<Blog> getAllBlogs();
+
+    // Get a blog by ID
+    public Optional<Blog> getBlogById(Long id);
+
+    // Get all blogs for a specific user
+    public List<Blog> getBlogsByUserId(Long userId);
+
+    // Update a blog
+    public Blog updateBlog(Long id, Blog updatedBlog);
+
+    // Delete a blog
+    public void deleteBlog(Long id);
+
+}
