@@ -56,4 +56,16 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+	@Override
+	public User loginUser(User user) {
+		User savedUser = userRepository.findByUserEmailId(user.getUserEmailId());
+		if(savedUser != null) {
+			boolean passwordMatched = passwordEncoder.matches(user.getUserPassword(), savedUser.getUserPassword());
+			if(passwordMatched) {
+				return savedUser;
+			}
+		}
+		return null;
+	}
+
 }

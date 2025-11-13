@@ -18,6 +18,9 @@ public interface UserService {
 
     // Get user by email
     public User getUserByEmail(String email);
+    
+ // Create new user
+    public User loginUser(User user);
 
     // Update user
     public User updateUser(Long id, User updatedUser);

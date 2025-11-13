@@ -56,6 +56,13 @@ public class BlogSiteController {
         return (user != null) ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
     
+    // User Login
+    @PostMapping("/user/login")
+    public ResponseEntity<User> loginUser(@RequestBody User user) {
+        User savedUser = userService.loginUser(user);
+        return (savedUser != null) ? ResponseEntity.ok(savedUser) : ResponseEntity.notFound().build();
+    }
+    
     
     
     // Blog Services
