@@ -75,13 +75,13 @@ public class BlogSiteController {
     }
 
     // Get all blogs
-    @GetMapping
+    @GetMapping("/blogs")
     public ResponseEntity<List<Blog>> getAllBlogs() {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
 
     // Get a blog by ID
-    @GetMapping("/{id}")
+    @GetMapping("/blog/{id}")
     public ResponseEntity<Blog> getBlogById(@PathVariable Long id) {
         return blogService.getBlogById(id)
                 .map(ResponseEntity::ok)
@@ -89,20 +89,27 @@ public class BlogSiteController {
     }
 
     // Get all blogs for a specific user
-    @GetMapping("/user/blog/{userId}")
+    @GetMapping("/blog/user/{userId}")
     public ResponseEntity<List<Blog>> getBlogsByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(blogService.getBlogsByUserId(userId));
     }
+    
+    // Get all blogs by a category
+    @GetMapping("/blogs/get/{category}")
+    public ResponseEntity<List<Blog>> getBlogById(@PathVariable String category) {
+    		List<Blog> foundBlogs = blogService.getBlogsByBlogCategory(category);
+    		return !foundBlogs.isEmpty() ? ResponseEntity.ok(foundBlogs) : ResponseEntity.notFound().build();
+    }
 
     // Update a blog
-    @PutMapping("/user/blog/{id}")
+    @PutMapping("/blog/{id}")
     public ResponseEntity<Blog> updateBlog(@PathVariable Long id, @RequestBody Blog blog) {
         Blog updated = blogService.updateBlog(id, blog);
         return ResponseEntity.ok(updated);
     }
 
     // Delete a blog
-    @DeleteMapping("/user/blog/{id}")
+    @DeleteMapping("/blog/{id}")
     public ResponseEntity<Void> deleteBlog(@PathVariable Long id) {
         blogService.deleteBlog(id);
         return ResponseEntity.noContent().build();

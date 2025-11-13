@@ -36,12 +36,22 @@ public class BlogServiceImpl implements BlogService {
 
     // Get all blogs
     public List<Blog> getAllBlogs() {
-        return blogRepository.findAll();
+    		List<Blog> allBlogs = blogRepository.findAll();
+    		allBlogs.stream().forEach(b -> b.setUser(null));
+        return allBlogs;
     }
 
     // Get a blog by ID
     public Optional<Blog> getBlogById(Long id) {
-        return blogRepository.findById(id);
+    		Optional<Blog> optionalBlog = blogRepository.findById(id);
+    		if(optionalBlog.isPresent()) {
+    			Blog blogFound = optionalBlog.get();
+    			User foundUser = userRepository.getById(blogFound.getUser().getUserId());
+    			User user = new User(foundUser.getUserName(), foundUser.getUserEmailId(), foundUser.getUserPassword());
+    			user.setUserId(foundUser.getUserId());
+    			blogFound.setUser(user);
+    		}
+        return optionalBlog;
     }
 
     // Get all blogs for a specific user
@@ -52,6 +62,13 @@ public class BlogServiceImpl implements BlogService {
         }
         return blogRepository.findByUser(userOptional.get());
     }
+
+	@Override
+	public List<Blog> getBlogsByBlogCategory(String blogCategory) {
+		List<Blog> foundBlogs = blogRepository.findByBlogCategory(blogCategory);
+		foundBlogs.stream().forEach(b -> b.setUser(null));
+		return foundBlogs;
+	}
 
     // Update a blog
     public Blog updateBlog(Long id, Blog updatedBlog) {

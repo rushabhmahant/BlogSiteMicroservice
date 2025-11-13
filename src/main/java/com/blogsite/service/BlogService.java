@@ -17,6 +17,9 @@ public interface BlogService {
 
     // Get all blogs for a specific user
     public List<Blog> getBlogsByUserId(Long userId);
+    
+    // Get all blogs for a specific category
+    public List<Blog> getBlogsByBlogCategory(String blogCategory);
 
     // Update a blog
     public Blog updateBlog(Long id, Blog updatedBlog);
