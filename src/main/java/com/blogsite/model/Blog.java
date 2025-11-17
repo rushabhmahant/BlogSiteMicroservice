@@ -27,7 +27,7 @@ public class Blog {
 	@Column(name = "blogCategory", nullable = false, length = 100)
 	private String blogCategory;
 
-	@Column(name = "blogArticle", nullable = false)
+	@Column(name = "blogArticle", nullable = false, length = 1000)
 	private String blogArticle;
 
 	@Column(name = "blogAuthorName", nullable = false, length = 255)
