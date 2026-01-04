@@ -28,6 +28,11 @@ public class User {
 	 // Constructors
     public User() {
     }
+    
+    public User(String userName, String userEmailId) {
+        this.userName = userName;
+        this.userEmailId = userEmailId;
+    }
 
     public User(String userName, String userEmailId, String userPassword) {
         this.userName = userName;

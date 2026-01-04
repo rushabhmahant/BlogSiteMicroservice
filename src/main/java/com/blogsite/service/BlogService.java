@@ -14,7 +14,7 @@ public interface BlogService {
     public List<Blog> getAllBlogs();
 
     // Get a blog by ID
-    public Optional<Blog> getBlogById(Long id);
+    public Blog getBlogById(Long id);
 
     // Get all blogs for a specific user
     public List<Blog> getBlogsByUserId(Long userId);

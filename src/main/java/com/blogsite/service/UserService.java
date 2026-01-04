@@ -14,7 +14,7 @@ public interface UserService {
     public List<User> getAllUsers();
 
     // Get user by ID
-    public Optional<User> getUserById(Long id);
+    public User getUserById(Long id);
 
     // Get user by email
     public User getUserByEmail(String email);

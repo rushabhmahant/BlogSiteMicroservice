@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.blogsite.exception.ResourceNotFoundException;
 import com.blogsite.model.User;
 import com.blogsite.repository.UserRepository;
 
@@ -20,6 +21,12 @@ public class UserServiceImpl implements UserService {
 
     // Create new user
     public User createUser(User user) {
+    	
+    		Optional<User> presentUser = userRepository.findByUserEmailId(user.getUserEmailId());
+    		if(presentUser.isPresent()) {
+    			throw new ResourceNotFoundException("User aleady registered with email id: " + user.getUserEmailId());
+    		}
+    	
     		String encodedPassword = passwordEncoder.encode(user.getUserPassword());
     		user.setUserPassword(encodedPassword);
     		return userRepository.save(user);
@@ -31,13 +38,15 @@ public class UserServiceImpl implements UserService {
     }
 
     // Get user by ID
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() ->
+        		new ResourceNotFoundException("User not found with id: " + id));
     }
 
     // Get user by email
     public User getUserByEmail(String email) {
-        return userRepository.findByUserEmailId(email);
+        return userRepository.findByUserEmailId(email).orElseThrow(() ->
+			new ResourceNotFoundException("User not found with email id: " + email));
     }
 
     // Update user
@@ -48,24 +57,30 @@ public class UserServiceImpl implements UserService {
                     user.setUserEmailId(updatedUser.getUserEmailId());
                     user.setUserPassword(passwordEncoder.encode(updatedUser.getUserPassword()));
                     return userRepository.save(user);
-                }).orElse(null);
+                }).orElseThrow(() ->
+        		new ResourceNotFoundException("User not found with id: " + id));
     }
 
     // Delete user
     public void deleteUser(Long id) {
+    	 	userRepository.findById(id).orElseThrow(() ->
+    	 		new ResourceNotFoundException("User not found with id: " + id));
         userRepository.deleteById(id);
     }
 
+    // Login user
 	@Override
 	public User loginUser(User user) {
-		User savedUser = userRepository.findByUserEmailId(user.getUserEmailId());
-		if(savedUser != null) {
+		return userRepository.findByUserEmailId(user.getUserEmailId()).map(savedUser -> {
 			boolean passwordMatched = passwordEncoder.matches(user.getUserPassword(), savedUser.getUserPassword());
-			if(passwordMatched) {
+			if (passwordMatched) {
 				return savedUser;
+			} else {
+				throw new ResourceNotFoundException(
+						"User credentials incorrect for email id: " + user.getUserEmailId());
 			}
-		}
-		return null;
+		}).orElseThrow(() -> new ResourceNotFoundException("User not found with email id: " + user.getUserEmailId()));
+
 	}
 
 }

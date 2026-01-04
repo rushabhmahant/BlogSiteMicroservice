@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.blogsite.exception.ResourceNotFoundException;
 import com.blogsite.model.Blog;
 import com.blogsite.model.User;
 import com.blogsite.repository.BlogRepository;
@@ -23,12 +24,10 @@ public class BlogServiceImpl implements BlogService {
 
     // Create a new blog
     public Blog createBlog(Long userId, Blog blog) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            throw new RuntimeException("User not found with id: " + userId);
-        }
+    	
+    		User user = userRepository.findById(userId).orElseThrow(() ->
+    			new ResourceNotFoundException("User not found with id: " + userId));
 
-        User user = userOptional.get();
         blog.setUser(user);
         blog.setBlogCreationTime(LocalDateTime.now());
         return blogRepository.save(blog);
@@ -42,25 +41,28 @@ public class BlogServiceImpl implements BlogService {
     }
 
     // Get a blog by ID
-    public Optional<Blog> getBlogById(Long id) {
-    		Optional<Blog> optionalBlog = blogRepository.findById(id);
-    		if(optionalBlog.isPresent()) {
-    			Blog blogFound = optionalBlog.get();
-    			User foundUser = userRepository.getById(blogFound.getUser().getUserId());
-    			User user = new User(foundUser.getUserName(), foundUser.getUserEmailId(), foundUser.getUserPassword());
-    			user.setUserId(foundUser.getUserId());
-    			blogFound.setUser(user);
-    		}
-        return optionalBlog;
+    public Blog getBlogById(Long id) {
+    		return blogRepository.findById(id)
+    				.map(blogFound -> {
+    					User foundUser = userRepository.getById(blogFound.getUser().getUserId());
+    					User user = new User(foundUser.getUserName(), foundUser.getUserEmailId());
+    	    				user.setUserId(foundUser.getUserId());
+    	    				blogFound.setUser(user);
+    	    				return blogFound;
+    				})
+    				.orElseThrow(() ->
+    					new ResourceNotFoundException("Blog not found with id: " + id));
     }
 
     // Get all blogs for a specific user
     public List<Blog> getBlogsByUserId(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            throw new RuntimeException("User not found with id: " + userId);
-        }
-        return blogRepository.findByUser(userOptional.get());
+    	
+    		return userRepository.findById(userId)
+    			.map(foundUser -> {
+    				return blogRepository.findByUser(foundUser);
+    			})
+    		.orElseThrow(() ->
+			new ResourceNotFoundException("User not found with id: " + userId));
     }
 
 	@Override
@@ -87,11 +89,13 @@ public class BlogServiceImpl implements BlogService {
                     blog.setBlogAuthorName(updatedBlog.getBlogAuthorName());
                     return blogRepository.save(blog);
                 })
-                .orElseThrow(() -> new RuntimeException("Blog not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Blog not found with id: " + id));
     }
 
     // Delete a blog
     public void deleteBlog(Long id) {
+    		blogRepository.findById(id).orElseThrow(() ->
+    			new ResourceNotFoundException("Blog not found with id: " + id));
         blogRepository.deleteById(id);
     }
 

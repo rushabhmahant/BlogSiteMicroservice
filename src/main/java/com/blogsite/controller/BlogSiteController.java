@@ -45,9 +45,8 @@ public class BlogSiteController {
     // Get user by ID
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    		User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 
     // Get user by email
@@ -84,9 +83,8 @@ public class BlogSiteController {
     // Get a blog by ID
     @GetMapping("/blog/{id}")
     public ResponseEntity<Blog> getBlogById(@PathVariable Long id) {
-        return blogService.getBlogById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    		Blog blog = blogService.getBlogById(id);
+        return ResponseEntity.ok(blog);
     }
 
     // Get all blogs for a specific user
