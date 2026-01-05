@@ -87,7 +87,10 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/api/v1/blogsite/user/login", "/api/v1/blogsite/user/register").permitAll()
+                .requestMatchers("/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/api/v1/blogsite/user/login", "/api/v1/blogsite/user/register").permitAll()
                 .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(request -> corsConfiguration));

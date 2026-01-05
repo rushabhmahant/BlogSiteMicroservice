@@ -21,8 +21,11 @@ import com.blogsite.model.User;
 import com.blogsite.service.BlogService;
 import com.blogsite.service.UserService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/blogsite")
+@Tag(name = "Blogsite APIs", description = "Operations related to users & blogs")
 public class BlogSiteController {
 
 	private static final Logger log = LoggerFactory.getLogger(BlogSiteController.class);
